@@ -1,5 +1,5 @@
-import GalaLogo from '@/components/gala-logo';
-'use client';import {useEffect,useState} from 'react';
+'use client';
+import GalaLogo from '@/components/gala-logo';import {useEffect,useState} from 'react';
 type P={id:string;first_name:string;phone_or_email:string;amount:number;status:string};
 const ids=['projet_a','projet_b','projet_c'];
 export default function Admin(){const [pledges,setPledges]=useState<P[]>([]),[names,setNames]=useState<Record<string,string>>({projet_a:'Projet A',projet_b:'Projet B',projet_c:'Projet C'}),[smile,setSmile]=useState(''),[msg,setMsg]=useState('');
