@@ -1,0 +1,1 @@
+export default function GalaLogo({size=64}:{size?:number}){return <img src="/logo-ee-israel.svg" alt="EE Israël — logo provisoire redessiné" width={size} height={size} style={{objectFit:'contain'}}/>}
