@@ -30,6 +30,3 @@ table th{font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;color:#68
 .gala-live-screen .panel{background:rgba(17,35,55,.88);border-color:rgba(221,197,164,.2);color:#f8f7f3;box-shadow:0 20px 55px rgba(0,0,0,.13)}
 .gala-live-screen .gold{color:#e7ceb0}
 .gala-live-screen .panel h2{color:#e7ceb0}
-
-/* Logo lisible sur l’écran sombre des dons */
-.gala-live-screen img[src="/logo-ee-israel.svg"]{background:#f8f7f3;border-radius:50%;padding:5px;box-shadow:0 4px 14px rgba(0,0,0,.25)}

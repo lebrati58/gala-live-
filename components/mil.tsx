@@ -3,7 +3,7 @@
 export const LETTERS = ['A', 'B', 'C', 'D'];
 
 export function MilLogo({ size }: { size: number }) {
-  return <span className="mil-logo" style={{ width: size, height: size }}><img src="/logo-ee-israel.svg" alt="EE Israël" /></span>;
+  return <span className="mil-logo" style={{ width: size, height: size }}><img src="/logo-ei-israel.png" alt="EI d’Israël — groupe Israël Ron Arad" /></span>;
 }
 
 type LozState = '' | 'locked' | 'correct' | 'dim';
