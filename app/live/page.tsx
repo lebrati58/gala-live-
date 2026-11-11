@@ -1,5 +1,5 @@
-import GalaLogo from '@/components/gala-logo';
 'use client';
+import GalaLogo from '@/components/gala-logo';
 import {useEffect,useMemo,useRef,useState} from 'react';
 import {AnimatePresence,motion} from 'framer-motion';
 import {CircleCheck,HeartHandshake,Users,TrendingUp} from 'lucide-react';
