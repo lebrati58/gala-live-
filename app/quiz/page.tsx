@@ -1,9 +1,9 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import GalaLogo from '@/components/gala-logo';
 import QuizGauge from '@/components/quiz-gauge';
-import { answerStyles, categories, Lang, QuizState, t } from '@/lib/quiz-i18n';
 import { Leaderboard, stripWarmup } from '@/components/quiz-ui';
+import { LETTERS, Lozenge, MilLogo, Ring } from '@/components/mil';
+import { categories, Lang, QuizState, t } from '@/lib/quiz-i18n';
 
 type Identity = { player_id: string; token: string; run_id: string };
 const LANG_KEY = 'gala_quiz_lang';
@@ -102,19 +102,19 @@ export default function QuizPlayer() {
 
   function changePlayer() { store.del(ID_KEY); idRef.current = null; setIdentity(null); }
 
-  if (!ready) return <Shell><p className="text-center text-xl">…</p></Shell>;
+  if (!ready) return <Shell><p className="text-center text-xl pt-20">…</p></Shell>;
 
   // 1) Choix de la langue, dès l'entrée
   if (!lang) return (
     <Shell>
-      <div className="text-center">
-        <div className="flex justify-center mb-4"><GalaLogo size={96} /></div>
-        <h1 className="text-3xl font-black mb-1">Le grand quiz du gala</h1>
-        <h1 className="text-3xl font-black mb-8" dir="rtl" lang="he">החידון הגדול של הגאלה</h1>
-        <p className="mb-4 text-lg font-semibold">Choisissez votre langue · <span dir="rtl" lang="he">בחרו שפה</span></p>
+      <div className="text-center pt-6">
+        <div className="flex justify-center mb-6"><MilLogo size={104} /></div>
+        <h1 className="mil-title text-4xl leading-tight">Le grand quiz<br />du gala</h1>
+        <h1 className="mil-title text-4xl leading-tight mt-2" dir="rtl" lang="he">החידון הגדול<br />של הגאלה</h1>
+        <p className="mt-8 mb-5 text-lg font-bold">Choisissez votre langue · <span dir="rtl" lang="he">בחרו שפה</span></p>
         <div className="grid gap-4">
-          <button className="quiz-big-btn" onClick={() => chooseLang('fr')}><span className="text-4xl" aria-hidden>🇫🇷</span> Français</button>
-          <button className="quiz-big-btn" onClick={() => chooseLang('he')} lang="he"><span className="text-4xl" aria-hidden>🇮🇱</span> עברית</button>
+          <div className="mil-row"><Lozenge onClick={() => chooseLang('fr')} label="Français"><span className="text-3xl" aria-hidden>🇫🇷</span><span className="text-2xl font-black">Français</span></Lozenge></div>
+          <div className="mil-row"><Lozenge onClick={() => chooseLang('he')} label="עברית"><span className="text-3xl" aria-hidden>🇮🇱</span><span className="text-2xl font-black" lang="he">עברית</span></Lozenge></div>
         </div>
       </div>
     </Shell>
@@ -130,111 +130,128 @@ export default function QuizPlayer() {
   const myChoice = me?.choice ?? (pending && q && pending.q === q.id ? pending.choice : undefined);
 
   const header = (
-    <header className="flex items-center justify-between gap-3 mb-5">
-      <div className="flex items-center gap-3 min-w-0"><GalaLogo size={46} /><div className="min-w-0"><p className="font-black text-base leading-tight">{L.title}</p>{me && <p className="text-sm quiz-muted truncate">{me.nickname} · {L.myTable} {me.table_number} · {me.score} {L.points}</p>}</div></div>
-      <button onClick={() => chooseLang(he ? 'fr' : 'he')} className="quiz-lang-btn" lang={he ? 'fr' : 'he'} aria-label={he ? 'Passer en français' : 'מעבר לעברית'}>{he ? '🇫🇷' : '🇮🇱'} {L.switchLang}</button>
+    <header className="flex items-center justify-between gap-3 mb-6">
+      <div className="flex items-center gap-3 min-w-0">
+        <MilLogo size={50} />
+        <div className="min-w-0">
+          <p className="font-black text-base leading-tight">{L.title}</p>
+          {me && <p className="text-sm font-bold mil-gold">{me.nickname} · {L.myTable} {me.table_number}</p>}
+        </div>
+      </div>
+      <div className="flex flex-col items-end gap-2">
+        <button onClick={() => chooseLang(he ? 'fr' : 'he')} className="mil-chip" lang={he ? 'fr' : 'he'} aria-label={he ? 'Passer en français' : 'מעבר לעברית'}>{he ? '🇫🇷' : '🇮🇱'} {L.switchLang}</button>
+      </div>
     </header>
   );
 
+  const scoreBar = me && s?.status !== 'idle' && s?.status !== 'lobby' && (
+    <div className="flex justify-center mb-5"><span className="mil-badge text-lg">💰 {me.score} {L.points}</span></div>
+  );
+
   let body: React.ReactNode;
-  if (!s) body = <Card><p className="text-center text-lg">{offline ? L.errors.network : '…'}</p></Card>;
-  else if (s.status === 'idle') body = <Card><p className="text-6xl text-center mb-4" aria-hidden>⛺</p><p className="text-center text-xl font-semibold">{L.closed}</p></Card>;
+  if (!s) body = <Panel><p className="text-center text-lg">{offline ? L.errors.network : '…'}</p></Panel>;
+  else if (s.status === 'idle') body = <Panel><p className="text-6xl text-center mb-4" aria-hidden>⛺</p><p className="text-center text-xl font-bold">{L.closed}</p></Panel>;
   else if (!me && s.status !== 'finished') body = (
-    <Card>
-      <h1 className="text-2xl font-black mb-1">{L.title}</h1>
-      <p className="mb-6 quiz-muted">{L.subtitle}</p>
+    <Panel>
+      <h1 className="mil-title text-3xl mb-1">{L.title}</h1>
+      <p className="mb-6 mil-muted font-semibold">{L.subtitle}</p>
       <form onSubmit={join} className="space-y-5">
-        <label className="block text-lg font-bold">{L.nickname}<input className="quiz-field" maxLength={30} autoComplete="nickname" value={nickname} onChange={e => setNickname(e.target.value)} required /></label>
-        <label className="block text-lg font-bold">{L.table}<input className="quiz-field text-center text-3xl font-black" inputMode="numeric" pattern="[0-9]*" min={1} max={500} type="number" value={table} onChange={e => setTable(e.target.value)} required /></label>
-        <button className="quiz-big-btn w-full" disabled={busy}>{busy ? L.joining : L.join} <span aria-hidden>🎉</span></button>
-        {error && <p role="alert" className="text-rose-200 font-semibold">{error}</p>}
+        <label>{L.nickname}<input className="mil-field" maxLength={30} autoComplete="nickname" value={nickname} onChange={e => setNickname(e.target.value)} required /></label>
+        <label>{L.table}<input className="mil-field text-center !text-4xl" inputMode="numeric" pattern="[0-9]*" min={1} max={500} type="number" value={table} onChange={e => setTable(e.target.value)} required /></label>
+        <button className="mil-btn" disabled={busy}>{busy ? L.joining : L.join} <span aria-hidden>💎</span></button>
+        {error && <p role="alert" className="font-bold text-[#ffb4a8]">{error}</p>}
       </form>
-    </Card>
+    </Panel>
   );
   else if (s.status === 'lobby') body = (
-    <Card>
-      <p className="text-6xl text-center mb-4 animate-bounce" aria-hidden>{s.index >= 0 ? '🏁' : '🎲'}</p>
-      <p className="text-center text-2xl font-black mb-6">{s.index >= 0 ? L.warmupDone : L.waitingStart}</p>
+    <Panel>
+      <p className="text-6xl text-center mb-3 animate-bounce" aria-hidden>{s.index >= 0 ? '🏆' : '💎'}</p>
+      <p className="text-center text-2xl font-black mb-7">{s.index >= 0 ? L.warmupDone : L.waitingStart}</p>
       <QuizGauge players={s.players} expected={s.expected_players} warmupPct={s.warmup_start_pct} gamePct={s.game_start_pct}
         labels={{ title: L.presence, warmup: L.warmupAt, game: L.gameAt }} />
-      <p className="text-center mt-6 font-semibold">📲 {L.inviteFriends}</p>
-    </Card>
+      <p className="text-center mt-7 font-bold mil-gold">📲 {L.inviteFriends}</p>
+    </Panel>
   );
-  else if (s.status === 'question' && q) body = (
-    <div>
-      <QuestionHead lang={lang} s={s} remaining={remaining} />
-      {myChoice !== undefined ? (
-        <Card><p className="text-6xl text-center mb-3" aria-hidden>✅</p><p className="text-center text-2xl font-black">{L.answered}</p>
-          <div className="mt-4 rounded-2xl p-4 text-white font-bold text-xl flex items-center gap-3" style={{ background: answerStyles[myChoice].bg }}><span aria-hidden className="text-2xl">{answerStyles[myChoice].shape}</span>{opts[myChoice]}</div>
-          <p className="text-center mt-4 quiz-muted">{L.answeredHint}</p></Card>
-      ) : remaining === 0 ? <Card><p className="text-center text-2xl font-black">⏰ {L.timeUp}</p></Card> : (
-        <div className="grid gap-3" role="group" aria-label={he ? q.question_he : q.question_fr}>
-          {opts.map((o, i) => <button key={i} onClick={() => answer(i)} disabled={!!pending} className="quiz-answer" style={{ background: answerStyles[i].bg }}><span aria-hidden className="text-3xl shrink-0">{answerStyles[i].shape}</span><span>{o}</span></button>)}
-        </div>
-      )}
-    </div>
-  );
-  else if (s.status === 'reveal' && q && s.reveal) {
+  else if ((s.status === 'question' || s.status === 'reveal') && q) {
+    const reveal = s.status === 'reveal' ? s.reveal : undefined;
     const ok = me?.correct === true; const none = myChoice === undefined;
+    const closed = s.status === 'question' && remaining === 0;
     body = (
       <div>
-        <QuestionHead lang={lang} s={s} remaining={0} />
-        <Card>
-          <p className="text-6xl text-center mb-2" aria-hidden>{none ? '🤔' : ok ? '🎉' : '💪'}</p>
-          <p className="text-center text-3xl font-black mb-1">{none ? L.noAnswer : ok ? L.correct : L.wrong}</p>
-          {ok && !q.warmup && <p className="text-center text-xl font-bold text-amber-200">+{me?.points} {L.points}</p>}
-          {q.warmup && <p className="text-center text-sm quiz-muted">{L.warmupNoPoints}</p>}
-          <p className="mt-5 font-bold">{L.goodAnswerWas}</p>
-          <div className="mt-2 rounded-2xl p-4 text-white font-bold text-xl flex items-center gap-3" style={{ background: answerStyles[s.reveal.correct_index].bg }}><span aria-hidden className="text-2xl">{answerStyles[s.reveal.correct_index].shape}</span>{opts[s.reveal.correct_index]}</div>
-          <p className="mt-4 text-lg leading-relaxed">{he ? s.reveal.explanation_he : s.reveal.explanation_fr}</p>
-          {s.reveal.source_label && <p className="mt-3 text-sm quiz-muted">{L.source} : {s.reveal.source_url ? <a className="underline" href={s.reveal.source_url} target="_blank" rel="noreferrer">{s.reveal.source_label}</a> : s.reveal.source_label}</p>}
-          {me?.table_rank && <p className="mt-5 text-center text-lg font-bold">{L.tableRank} : <span className="text-amber-200 text-2xl">#{me.table_rank}</span></p>}
-        </Card>
-        <p className="text-center mt-4 quiz-muted">{L.waitingNext}</p>
+        <QuestionHead lang={lang} s={s} remaining={remaining} />
+        <div className="grid gap-3" role="group" aria-label={he ? q.question_he : q.question_fr}>
+          {opts.map((o, i) => {
+            const st = reveal ? (i === reveal.correct_index ? 'correct' : i === myChoice ? 'locked' : 'dim')
+              : myChoice !== undefined ? (i === myChoice ? 'locked' : 'dim') : '';
+            const clickable = s.status === 'question' && myChoice === undefined && !closed && !pending;
+            return (
+              <div key={i} className="mil-row">
+                <Lozenge state={st} onClick={clickable ? () => answer(i) : undefined} label={`${LETTERS[i]} : ${o}`} tip={22}>
+                  <span className="mil-letter text-2xl">{LETTERS[i]}</span><span className="mil-ans-text text-xl">{o}</span>
+                </Lozenge>
+              </div>
+            );
+          })}
+        </div>
+        {s.status === 'question' && (
+          <p className="text-center mt-6 text-lg font-bold" role="status">
+            {myChoice !== undefined ? <>🔒 {L.answered} <span className="mil-muted font-semibold">— {L.answeredHint}</span></> : closed ? <>⏰ {L.timeUp}</> : null}
+          </p>
+        )}
+        {reveal && (
+          <Panel className="mt-6 mil-pop">
+            <p className="text-center text-3xl font-black">{none ? '🤔 ' + L.noAnswer : ok ? '🎉 ' + L.correct : '💪 ' + L.wrong}</p>
+            {ok && !q.warmup && <p className="text-center text-2xl font-black mil-gold mt-1">+{me?.points} {L.points}</p>}
+            {q.warmup && <p className="text-center text-sm mil-muted mt-1">{L.warmupNoPoints}</p>}
+            <p className="mt-4 text-lg leading-relaxed">{he ? reveal.explanation_he : reveal.explanation_fr}</p>
+            {reveal.source_label && <p className="mt-3 text-sm mil-muted">{L.source} : {reveal.source_url ? <a className="underline mil-gold" href={reveal.source_url} target="_blank" rel="noreferrer">{reveal.source_label}</a> : reveal.source_label}</p>}
+            {me?.table_rank && !q.warmup && <p className="mt-5 text-center text-lg font-bold">{L.tableRank} : <span className="mil-title text-3xl">#{me.table_rank}</span></p>}
+          </Panel>
+        )}
+        {reveal && <p className="text-center mt-4 mil-muted font-semibold">{L.waitingNext}</p>}
       </div>
     );
   } else if (s.status === 'finished') body = (
-    <Card>
+    <Panel>
       <p className="text-6xl text-center mb-3" aria-hidden>🏆</p>
       <p className="text-center text-3xl font-black">{L.finished}</p>
-      {me && <><p className="text-center mt-4 text-lg">{L.finalScore}</p><p className="text-center text-5xl font-black text-amber-200">{me.score}</p>
-        {me.table_rank && <p className="text-center mt-3 text-lg font-bold">{L.tableRank} : #{me.table_rank}</p>}</>}
+      {me && <><p className="text-center mt-5 text-lg mil-muted font-bold">{L.finalScore}</p><p className="text-center text-6xl mil-title">{me.score}</p>
+        {me.table_rank && <p className="text-center mt-3 text-lg font-bold">{L.tableRank} : <span className="mil-gold">#{me.table_rank}</span></p>}</>}
       {s.tables && s.tables.length > 0 && <Leaderboard lang={lang} rows={s.tables.slice(0, 5)} highlight={me?.table_number} />}
-    </Card>
+    </Panel>
   );
-  else body = <Card><p className="text-center text-xl">{L.waitingNext}</p></Card>;
+  else body = <Panel><p className="text-center text-xl">{L.waitingNext}</p></Panel>;
 
   return (
     <Shell lang={lang}>
       {header}
-      {offline && s && <p role="status" className="mb-3 text-center text-sm text-amber-200">{L.errors.network}</p>}
+      {offline && s && <p role="status" className="mb-3 text-center text-sm font-bold text-[#ffd08a]">{L.errors.network}</p>}
+      {scoreBar}
       {body}
-      {me && s?.status !== 'finished' && <button onClick={changePlayer} className="block mx-auto mt-8 text-sm underline quiz-muted">{L.changePlayer}</button>}
+      {me && s?.status !== 'finished' && <button onClick={changePlayer} className="block mx-auto mt-10 text-sm underline mil-muted">{L.changePlayer}</button>}
     </Shell>
   );
 }
 
 function Shell({ children, lang }: { children: React.ReactNode; lang?: Lang }) {
-  return <main className="quiz-screen min-h-screen" dir={lang === 'he' ? 'rtl' : 'ltr'} lang={lang || 'fr'}><div className="max-w-lg mx-auto p-4 pb-12 pt-6">{children}</div></main>;
+  return <main className="mil" dir={lang === 'he' ? 'rtl' : 'ltr'} lang={lang || 'fr'}><div className="max-w-lg mx-auto px-4 pb-12 pt-6">{children}</div></main>;
 }
-function Card({ children }: { children: React.ReactNode }) { return <section className="quiz-card">{children}</section>; }
+function Panel({ children, className = '' }: { children: React.ReactNode; className?: string }) { return <section className={'mil-panel ' + className}>{children}</section>; }
 
 function QuestionHead({ lang, s, remaining }: { lang: Lang; s: QuizState; remaining: number }) {
   const L = t[lang]; const q = s.question!; const cat = categories[q.category];
-  const pct = s.status === 'question' ? Math.min(100, (remaining / q.time_limit_s) * 100) : 0;
   return (
-    <div className="mb-4">
-      {q.warmup ? (
-        <div className="quiz-warmup-badge mb-3">🔥 {L.warmupBadge} — {q.warmup === 'seniors' ? L.warmupSeniors : L.warmupJuniors}</div>
-      ) : (
-        <div className="flex items-center justify-between text-sm font-bold mb-2 quiz-muted">
-          <span>{cat?.emoji} {cat?.[lang]}</span>
-          <span>{L.question} {s.index + 1 - s.warmups} {L.of} {s.total - s.warmups}</span>
+    <div className="mb-5">
+      <div className="flex items-center justify-between gap-3 mb-4">
+        <div className="min-w-0">
+          {q.warmup
+            ? <span className="mil-badge text-sm">🔥 {L.warmupBadge}</span>
+            : <p className="font-black mil-gold text-lg">{L.question} {s.index + 1 - s.warmups} <span className="mil-muted font-bold">{L.of} {s.total - s.warmups}</span></p>}
+          <p className="text-sm font-bold mil-muted mt-1">{q.warmup ? (q.warmup === 'seniors' ? L.warmupSeniors : L.warmupJuniors) : <>{cat?.emoji} {cat?.[lang]}</>}</p>
         </div>
-      )}
-      {s.status === 'question' && <div className="flex items-center gap-3 mb-3"><div className="quiz-timer flex-1" aria-hidden><div style={{ width: pct + '%' }} /></div><span className="font-black text-2xl tabular-nums w-14 text-center" aria-live="off">{remaining}{L.secondsLeft}</span></div>}
-      <h1 className="text-2xl font-black leading-snug">{stripWarmup(lang === 'he' ? q.question_he : q.question_fr)}</h1>
+        {s.status === 'question' && <Ring remaining={remaining} total={q.time_limit_s} size={78} />}
+      </div>
+      <div className="mil-row"><Lozenge question tip={22}><h1 className="text-[1.45rem] font-black leading-snug py-2">{stripWarmup(lang === 'he' ? q.question_he : q.question_fr)}</h1></Lozenge></div>
     </div>
   );
 }
-

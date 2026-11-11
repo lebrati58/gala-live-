@@ -1,0 +1,147 @@
+/* =====================================================================
+   QUIZ — thème « Qui veut gagner des millions »
+   Plateau bleu nuit, faisceaux de projecteurs, losanges à bord doré,
+   réponse verrouillée orange, bonne réponse qui clignote en vert.
+   Inspiré aussi de Moreh Derech NEXT : relief « arcade », Heebo, chrono circulaire.
+   ===================================================================== */
+.mil {
+  --night: #050a24; --night-2: #0b1640; --indigo: #1a2470; --royal: #2a3bb0;
+  --gold: #f5c542; --gold-2: #ffe28a; --gold-3: #b8860b; --silver: #c9d3f2;
+  --ink: #ffffff; --muted: #c4cdf0;
+  --lock: #f39c12; --lock-2: #d35400; --win: #1fb85a; --win-2: #0b7a37; --lose: #c0392b;
+  position: relative; z-index: 1; min-height: 100vh; color: var(--ink); overflow-x: hidden;
+  font-family: 'Heebo', 'Rubik', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  background:
+    radial-gradient(ellipse 60% 45% at 50% 38%, rgba(70, 95, 255, .35), transparent 70%),
+    radial-gradient(ellipse 120% 70% at 50% 110%, #1b1061 0%, transparent 60%),
+    linear-gradient(180deg, var(--night) 0%, var(--night-2) 55%, #10093a 100%);
+}
+/* Faisceaux de projecteurs qui balaient doucement le plateau */
+.mil::before {
+  content: ''; position: fixed; inset: -20% -10% auto; height: 120%; pointer-events: none; z-index: -1; opacity: .55;
+  background:
+    conic-gradient(from 200deg at 15% -5%, transparent 0deg, rgba(120,150,255,.18) 8deg, transparent 18deg),
+    conic-gradient(from 150deg at 85% -5%, transparent 0deg, rgba(120,150,255,.18) 8deg, transparent 18deg),
+    conic-gradient(from 175deg at 50% -10%, transparent 0deg, rgba(255,226,138,.10) 6deg, transparent 12deg);
+  animation: mil-sweep 9s ease-in-out infinite alternate;
+}
+/* Ciel étoilé discret */
+.mil::after {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: -1; opacity: .5;
+  background-image:
+    radial-gradient(1.5px 1.5px at 12% 22%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 27% 68%, #cfd8ff 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 44% 12%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 63% 81%, #cfd8ff 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 78% 30%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 91% 62%, #cfd8ff 50%, transparent 51%),
+    radial-gradient(1px 1px at 6% 88%, #fff 50%, transparent 51%);
+}
+@keyframes mil-sweep { from { transform: translateX(-2%) rotate(-1deg); } to { transform: translateX(2%) rotate(1deg); } }
+
+:where(.mil) :where(h1, h2, p) { margin: 0; }
+.mil-muted { color: var(--muted); }
+.mil-gold { color: var(--gold); }
+.mil-title { font-weight: 900; letter-spacing: -.01em; background: linear-gradient(180deg, #fff6d0 0%, var(--gold) 45%, var(--gold-3) 100%); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 2px 0 rgba(0,0,0,.35)); }
+
+/* ---------- Logo dans un médaillon doré ---------- */
+.mil-logo { display: inline-grid; place-items: center; flex: none; border-radius: 50%; background: #fff; padding: 4px;
+  box-shadow: 0 0 0 3px var(--gold), 0 0 0 6px rgba(245,197,66,.25), 0 6px 18px rgba(0,0,0,.45); }
+.mil-logo img { display: block; width: 100%; height: 100%; object-fit: contain; }
+
+/* ---------- Losanges à bord doré (question & réponses) ---------- */
+.mil-row { position: relative; }
+/* le fil doré horizontal qui relie les losanges, comme à la télé */
+.mil-row::before { content: ''; position: absolute; left: -100vw; right: -100vw; top: 50%; height: 2px; transform: translateY(-1px); z-index: 0;
+  background: linear-gradient(90deg, transparent, rgba(201,211,242,.55) 20%, rgba(201,211,242,.55) 80%, transparent); }
+.mil-loz { --tip: 26px; position: relative; z-index: 1; display: block; width: 100%; padding: 2px; border: 0; color: inherit; font: inherit; text-align: start;
+  background: linear-gradient(180deg, var(--gold-2), var(--gold) 45%, var(--gold-3));
+  clip-path: polygon(var(--tip) 0, calc(100% - var(--tip)) 0, 100% 50%, calc(100% - var(--tip)) 100%, var(--tip) 100%, 0 50%);
+  transition: transform .15s ease, filter .15s ease; }
+.mil-loz > .mil-in { display: flex; align-items: center; gap: 14px; min-height: 100%; padding: 14px calc(var(--tip) + 6px);
+  clip-path: polygon(calc(var(--tip) - 1px) 0, calc(100% - var(--tip) + 1px) 0, 100% 50%, calc(100% - var(--tip) + 1px) 100%, calc(var(--tip) - 1px) 100%, 0 50%);
+  background: radial-gradient(ellipse 80% 120% at 50% 0%, #2e3ea8 0%, #121b5c 55%, #070c33 100%); }
+.mil-loz.q > .mil-in { justify-content: center; text-align: center; background: radial-gradient(ellipse 90% 130% at 50% 0%, #34449f 0%, #141d5f 55%, #060a2b 100%); }
+button.mil-loz { cursor: pointer; }
+button.mil-loz:hover:not(:disabled) { filter: brightness(1.15); }
+button.mil-loz:active:not(:disabled) { transform: scale(.985); }
+button.mil-loz:focus-visible { outline: none; filter: drop-shadow(0 0 10px var(--gold-2)) brightness(1.15); }
+button.mil-loz:disabled { cursor: default; }
+.mil-letter { flex: none; font-weight: 900; color: var(--gold); white-space: nowrap; }
+.mil-letter::before { content: '◆'; margin-inline-end: 6px; font-size: .8em; color: var(--lock); }
+.mil-ans-text { font-weight: 700; line-height: 1.25; }
+
+/* États */
+.mil-loz.locked > .mil-in { background: linear-gradient(180deg, #ffbf47 0%, var(--lock) 45%, var(--lock-2) 100%); color: #1a0d00; }
+.mil-loz.locked .mil-letter { color: #2a1400; } .mil-loz.locked .mil-letter::before { color: #fff; }
+.mil-loz.correct > .mil-in { background: linear-gradient(180deg, #5ef08f 0%, var(--win) 45%, var(--win-2) 100%); color: #021b0b; animation: mil-flash .45s ease-in-out 4; }
+.mil-loz.correct .mil-letter { color: #04230f; } .mil-loz.correct .mil-letter::before { color: #fff; }
+.mil-loz.dim { filter: saturate(.5) brightness(.55); }
+@keyframes mil-flash { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(1.6); } }
+
+/* ---------- Chrono circulaire (repris de Moreh Derech) ---------- */
+.mil-ring { --ring: var(--gold); position: relative; flex: none; display: grid; place-items: center; border-radius: 50%;
+  background: radial-gradient(circle, #1c2a8a 0%, #0a1040 70%); box-shadow: 0 0 0 3px var(--gold-3), 0 0 26px rgba(80,110,255,.45); }
+.mil-ring svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+.mil-ring circle { fill: none; stroke-width: 8; }
+.mil-ring .track { stroke: rgba(255,255,255,.12); }
+.mil-ring .prog { stroke: var(--ring); stroke-linecap: round; transition: stroke-dashoffset .25s linear, stroke .3s; filter: drop-shadow(0 0 6px var(--ring)); }
+.mil-ring b { position: relative; font-weight: 900; font-variant-numeric: tabular-nums; color: #fff; }
+.mil-ring.warn { --ring: var(--lock); }
+.mil-ring.danger { --ring: #ff4d4d; animation: mil-beat 1s ease-in-out infinite; }
+@keyframes mil-beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+
+/* ---------- Échelle (questions / classement), comme l'échelle des gains ---------- */
+.mil-ladder { background: linear-gradient(180deg, rgba(10,16,64,.92), rgba(5,8,36,.95)); border: 2px solid rgba(245,197,66,.45); border-radius: 18px; padding: 12px; box-shadow: inset 0 0 30px rgba(42,59,176,.35), 0 10px 40px rgba(0,0,0,.4); }
+.mil-ladder ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column-reverse; gap: 3px; }
+.mil-ladder li { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 4px 14px; border-radius: 999px; font-weight: 800; color: var(--lock); font-variant-numeric: tabular-nums; }
+.mil-ladder li.done { color: var(--gold-2); opacity: .75; }
+.mil-ladder li.milestone { color: #fff; }
+.mil-ladder li.current { background: linear-gradient(180deg, #ffbf47, var(--lock) 50%, var(--lock-2)); color: #1a0d00; box-shadow: 0 0 18px rgba(243,156,18,.6); }
+.mil-ladder li.warm { color: var(--silver); font-style: italic; }
+
+/* ---------- Boutons « arcade » ---------- */
+.mil-btn { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; min-height: 64px; padding: 14px 22px; border: 0; border-radius: 16px; cursor: pointer;
+  font: inherit; font-size: 1.5rem; font-weight: 900; color: #1a0d00; background: linear-gradient(180deg, var(--gold-2), var(--gold) 50%, #e0a91f); box-shadow: 0 6px 0 #8a6408, 0 12px 26px rgba(0,0,0,.4); transition: transform .08s; }
+.mil-btn:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 2px 0 #8a6408; }
+.mil-btn:disabled { opacity: .6; cursor: wait; }
+.mil-btn:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+.mil-chip { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px 16px; border-radius: 999px; border: 2px solid rgba(245,197,66,.6); background: rgba(10,16,64,.75); color: #fff; font: inherit; font-weight: 800; cursor: pointer; }
+.mil-chip:focus-visible { outline: 3px solid var(--gold-2); outline-offset: 2px; }
+
+/* ---------- Cartes / panneaux ---------- */
+.mil-panel { position: relative; background: linear-gradient(180deg, rgba(26,36,112,.85), rgba(8,12,48,.92)); border: 2px solid rgba(245,197,66,.5); border-radius: 22px; padding: 22px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.12), inset 0 0 40px rgba(42,59,176,.35), 0 14px 40px rgba(0,0,0,.45); }
+.mil-panel label { display: block; color: #fff; font-weight: 800; font-size: 1.1rem; }
+.mil-field { display: block; width: 100%; margin-top: 8px; padding: 15px 18px; border-radius: 14px; border: 2px solid rgba(245,197,66,.55); background: #fffdf5; color: #0b1640; font: inherit; font-size: 1.3rem; font-weight: 800; outline: none; }
+.mil-field::placeholder { color: #7a83a8; font-weight: 600; }
+.mil-field:focus { border-color: var(--gold-2); box-shadow: 0 0 0 4px rgba(245,197,66,.35); }
+
+/* ---------- Jauge de présence ---------- */
+.quiz-gauge { position: relative; border-radius: 999px; background: rgba(5,8,36,.8); border: 2px solid rgba(245,197,66,.5); box-shadow: inset 0 2px 8px rgba(0,0,0,.6); }
+.quiz-gauge-fill { height: 100%; border-radius: 999px; background: linear-gradient(180deg, var(--gold-2, #ffe28a), var(--gold, #f5c542) 50%, #c98f12); box-shadow: 0 0 22px rgba(245,197,66,.55); transition: width .8s cubic-bezier(.2,.8,.2,1); }
+.quiz-gauge-fill.green { background: linear-gradient(180deg, #7af5a6, #1fb85a 50%, #0b7a37); box-shadow: 0 0 22px rgba(31,184,90,.6); }
+
+/* ---------- Histogramme « le public a voté » ---------- */
+.mil-audience { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; align-items: end; }
+.mil-audience .bar-wrap { display: flex; flex-direction: column; align-items: center; gap: 8px; height: 100%; justify-content: flex-end; }
+.mil-audience .bar { width: 64%; border-radius: 10px 10px 4px 4px; background: linear-gradient(180deg, #8fa2ff, #3c50d6); box-shadow: 0 0 18px rgba(80,110,255,.5); transition: height 1s cubic-bezier(.2,.8,.2,1); min-height: 6px; }
+.mil-audience .bar.ok { background: linear-gradient(180deg, #7af5a6, #1fb85a 60%, #0b7a37); box-shadow: 0 0 22px rgba(31,184,90,.7); }
+.mil-audience .pct { font-weight: 900; font-variant-numeric: tabular-nums; }
+.mil-audience .lbl { font-weight: 900; color: var(--gold); }
+
+/* ---------- Podium ---------- */
+.mil-podium { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; border-radius: 18px 18px 0 0;
+  background: linear-gradient(180deg, var(--gold-2), var(--gold) 45%, var(--gold-3)); color: #1a0d00; box-shadow: 0 0 40px rgba(245,197,66,.45); }
+
+.mil-badge { display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; padding: 6px 16px; font-weight: 900; color: #1a0d00; background: linear-gradient(180deg, #ffbf47, var(--lock) 50%, var(--lock-2)); box-shadow: 0 3px 0 #7a3000; }
+.mil-pop { animation: mil-pop .5s cubic-bezier(.2,1.6,.4,1) both; }
+@keyframes mil-pop { from { transform: scale(.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .mil::before, .mil-loz.correct > .mil-in, .mil-ring.danger, .mil-pop { animation: none !important; }
+  .quiz-gauge-fill, .mil-audience .bar { transition: none; }
+}
+
+/* Jauge dans l'admin (fond clair) */
+.quiz-admin-gauge { background: #0b1640; color: #fff; --muted: #c4cdf0; --gold: #f5c542; --gold-2: #ffe28a; --gold-3: #b8860b; }
