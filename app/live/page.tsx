@@ -33,7 +33,7 @@ export default function Live(){
  const total=useMemo(()=>pledges.reduce((n,p)=>n+Number(p.amount),0),[pledges]);
  const paid=useMemo(()=>pledges.filter(p=>p.status==='paid').reduce((n,p)=>n+Number(p.amount),0),[pledges]);
  const pending=total-paid;
- return <main className="min-h-screen bg-[#122238] text-white p-5 md:p-10 lg:p-14 overflow-hidden">
+ return <main className="gala-live-screen min-h-screen bg-[#122238] text-white p-5 md:p-10 lg:p-14 overflow-hidden">
   <header className="flex items-center justify-between gap-4 mb-8 md:mb-12">
    <div className="flex items-center gap-4"><GalaLogo size={92}/><div><p className="text-xs md:text-sm tracking-[.4em] text-[#dfc5a3] uppercase">Soirée de solidarité</p><h1 className="text-3xl md:text-5xl font-black tracking-tight">GALA <span className="gold">LIVE</span></h1></div></div>
    <span className={error?'text-rose-300':'text-emerald-300'} aria-live="polite">{error?'● Connexion interrompue':'● Actualisation toutes les 3 s'}</span>
