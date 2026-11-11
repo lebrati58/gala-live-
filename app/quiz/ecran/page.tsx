@@ -85,6 +85,13 @@ export default function QuizScreen() {
     const answers = s.answers || 0;
     const answerPct = Math.min(100, Math.round((answers / Math.max(1, s.expected_players)) * 100));
     const cat = categories[q.category];
+    // Taille du texte adaptée à la longueur, pour que tout tienne toujours dans l'écran
+    const qLen = Math.max(stripWarmup(q.question_fr).length, stripWarmup(q.question_he).length);
+    const qSize = qLen > 110 ? '1.95rem' : qLen > 70 ? '2.3rem' : '2.7rem';
+    const oLen = Math.max(...q.options_fr.map(o => o.length), ...q.options_he.map(o => o.length));
+    const oSize = oLen > 26 ? '1.4rem' : oLen > 18 ? '1.65rem' : '2rem';
+    const long = qLen > 70 || oLen > 18;
+    const exLen = reveal ? Math.max(reveal.explanation_fr.length, reveal.explanation_he.length) : 0;
     body = (
       <div className="h-full grid grid-cols-[1fr_330px] gap-10">
         <div className="flex flex-col min-h-0">
@@ -98,23 +105,23 @@ export default function QuizScreen() {
               ? <Ring remaining={remaining} total={q.time_limit_s} size={136} />
               : <span className="mil-badge text-3xl">⏰ Réponse ! · !תשובה</span>}
           </div>
-          <div className="flex-1 flex flex-col justify-center gap-9">
+          <div className={'flex-1 min-h-0 flex flex-col justify-center ' + (long ? 'gap-5' : 'gap-9')}>
             <div className="mil-row">
               <Lozenge question tip={50}>
-                <div className="grid grid-cols-2 gap-10 w-full py-5 items-center">
-                  <h1 className="text-[2.7rem] font-black leading-tight text-start" dir="ltr" lang="fr">{stripWarmup(q.question_fr)}</h1>
-                  <h1 className="text-[2.7rem] font-black leading-tight text-start" dir="rtl" lang="he">{stripWarmup(q.question_he)}</h1>
+                <div className={'grid grid-cols-2 gap-10 w-full items-center ' + (long ? 'py-2' : 'py-5')}>
+                  <h1 className="font-black leading-tight text-start" style={{ fontSize: qSize }} dir="ltr" lang="fr">{stripWarmup(q.question_fr)}</h1>
+                  <h1 className="font-black leading-tight text-start" style={{ fontSize: qSize }} dir="rtl" lang="he">{stripWarmup(q.question_he)}</h1>
                 </div>
               </Lozenge>
             </div>
-            <div className="grid grid-cols-2 gap-x-6 gap-y-5">
+            <div className={'grid grid-cols-2 gap-x-6 ' + (long ? 'gap-y-3' : 'gap-y-5')}>
               {q.options_fr.map((o, i) => (
                 <div key={i} className="mil-row">
                   <Lozenge tip={40} state={reveal ? (reveal.correct_index === i ? 'correct' : 'dim') : ''}>
                     <span className="mil-letter text-4xl">{LETTERS[i]}</span>
                     <div className="flex-1 grid grid-cols-2 gap-4 items-center py-2">
-                      <span className="mil-ans-text text-[2rem]" dir="ltr" lang="fr">{o}</span>
-                      <span className="mil-ans-text text-[2rem] text-start" dir="rtl" lang="he">{q.options_he[i]}</span>
+                      <span className="mil-ans-text" style={{ fontSize: oSize }} dir="ltr" lang="fr">{o}</span>
+                      <span className="mil-ans-text text-start" style={{ fontSize: oSize }} dir="rtl" lang="he">{q.options_he[i]}</span>
                     </div>
                   </Lozenge>
                 </div>
@@ -122,7 +129,7 @@ export default function QuizScreen() {
             </div>
           </div>
           {reveal ? (
-            <div className="mil-panel mt-6 grid grid-cols-2 gap-10 text-2xl leading-snug">
+            <div className={'mil-panel grid grid-cols-2 gap-10 leading-snug ' + (long || exLen > 140 ? 'mt-4 text-xl !py-4' : 'mt-6 text-2xl')}>
               <p dir="ltr" lang="fr">{reveal.explanation_fr}</p>
               <p dir="rtl" lang="he">{reveal.explanation_he}</p>
               {reveal.source_label && <p className="col-span-2 text-base mil-muted">Source · מקור : {reveal.source_label}</p>}
@@ -190,7 +197,11 @@ function Results({ s }: { s: QuizState }) {
       <div className="mil-panel flex flex-col">
         <Bi fr={q.warmup ? 'Le public a voté — échauffement' : `Le public a voté — question ${s.index + 1 - s.warmups}`}
             he={q.warmup ? 'הקהל הצביע — חימום' : `הקהל הצביע — שאלה ${s.index + 1 - s.warmups}`} cls="mil-title text-5xl leading-tight mb-6" />
-        <div className="mil-audience flex-1 min-h-0">
+        {answered === 0 ? (
+          <div className="flex-1 flex items-center justify-center text-center">
+            <Bi fr="Personne n’a répondu à temps !" he="!אף אחד לא ענה בזמן" cls="text-5xl font-black mil-muted" center />
+          </div>
+        ) : <div className="mil-audience flex-1 min-h-0">
           {r.distribution.map((n, i) => {
             const pct = answered ? Math.round((n / answered) * 100) : 0;
             return (
@@ -201,7 +212,7 @@ function Results({ s }: { s: QuizState }) {
               </div>
             );
           })}
-        </div>
+        </div>}
         <div className="grid grid-cols-2 gap-8 mt-6 text-2xl font-bold">
           <p><span className="mil-title text-6xl">{goodPct}%</span><br />de bonnes réponses · <span lang="he">תשובות נכונות</span></p>
           <p><span className="mil-title text-6xl">{roomPct}%</span><br />de la salle a joué · <span lang="he">מהאולם השתתפו</span></p>
