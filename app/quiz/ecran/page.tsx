@@ -9,6 +9,7 @@ import { categories, QuizState } from '@/lib/quiz-i18n';
 // Écran géant façon « Qui veut gagner des millions », entièrement bilingue :
 // français à gauche (LTR), hébreu à droite (RTL).
 const RESULTS_AFTER_MS = 8000; // 8 s sur la bonne réponse, puis l'écran des résultats
+const STAGE_W = 1920, STAGE_H = 1080;
 
 export default function QuizScreen() {
   const [s, setS] = useState<QuizState | null>(null);
@@ -17,6 +18,15 @@ export default function QuizScreen() {
   const [offline, setOffline] = useState(false);
   const [now, setNow] = useState(Date.now());
   const offset = useRef(0);
+  const [scale, setScale] = useState(1);
+
+  // L'écran est composé en 1920×1080 puis mis à l'échelle de la fenêtre :
+  // rendu identique sur tout ordinateur, écran 16:10 ou projecteur (bandes si besoin).
+  useEffect(() => {
+    const fit = () => setScale(Math.min(window.innerWidth / STAGE_W, window.innerHeight / STAGE_H));
+    fit(); window.addEventListener('resize', fit);
+    return () => window.removeEventListener('resize', fit);
+  }, []);
 
   useEffect(() => {
     const url = window.location.origin + '/quiz';
@@ -133,7 +143,8 @@ export default function QuizScreen() {
   } else if (s.status === 'finished') body = <Final s={s} />;
 
   return (
-    <main className="mil h-screen overflow-hidden flex flex-col px-12 py-9">
+    <main className="mil h-screen overflow-hidden relative">
+     <div className="absolute flex flex-col px-12 py-9" style={{ width: STAGE_W, height: STAGE_H, left: '50%', top: '50%', transform: `translate(-50%, -50%) scale(${scale})` }}>
       <header className="flex items-center justify-between mb-7 gap-6">
         <div className="flex items-center gap-5"><MilLogo size={86} />
           <div><p className="mil-title text-[2.6rem] leading-none">Le grand quiz du gala</p><p className="mil-title text-[2.2rem] leading-tight mt-1" dir="rtl" lang="he">החידון הגדול של הגאלה</p></div></div>
@@ -144,6 +155,7 @@ export default function QuizScreen() {
         </div>
       </header>
       <div className="flex-1 min-h-0">{body}</div>
+     </div>
     </main>
   );
 }

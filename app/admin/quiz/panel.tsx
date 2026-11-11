@@ -105,6 +105,9 @@ export default function QuizAdmin() {
           <a className="text-sm underline" href="/admin">← Dons</a>
         </div>
       </div>
+      <p className="-mt-3 mb-5 text-xs text-slate-500 text-right" title="L’écran s’adapte aux autres formats avec de fines bandes noires.">
+        📽️ Projecteur : format <strong>16:9</strong> conseillé (1920×1080 ou 1280×720) · ouvrir « Écran géant » sur l’ordinateur relié au projo, puis plein écran (<kbd>F11</kbd>, ou <kbd>Ctrl</kbd>+<kbd>⌘</kbd>+<kbd>F</kbd> sur Mac)
+      </p>
       {(msg || err) && <p role="status" className={'mb-4 rounded-xl px-4 py-3 font-semibold ' + (err ? 'bg-rose-100 text-rose-800' : 'bg-emerald-100 text-emerald-800')}>{err || msg}</p>}
 
       <div className="grid lg:grid-cols-[3fr_2fr] gap-5 mb-5">
