@@ -55,3 +55,10 @@ table th{font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;color:#68
 .quiz-podium{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border-radius:22px 22px 0 0;background:linear-gradient(180deg,#f3d7a8,#c9965d);color:#122238}
 @media (prefers-reduced-motion:reduce){.quiz-gauge-fill,.quiz-timer>div,.quiz-dist{transition:none}.animate-bounce{animation:none}}
 .quiz-admin-gauge{background:#122238;color:#f8f7f3}
+
+/* Lisibilité sur fond sombre : les styles des pages claires (dons) ne doivent pas déteindre */
+.quiz-screen label,.quiz-screen legend{color:#f8f7f3}
+.quiz-screen a{color:#f3d7a8}
+.quiz-field::placeholder{color:#6b7787}
+.quiz-screen img[src="/logo-ee-israel.svg"],.gala-live-screen img[src="/logo-ee-israel.svg"]{background:#f8f7f3;border-radius:50%;padding:5px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.quiz-muted{color:#c9d1dc}

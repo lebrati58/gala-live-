@@ -60,9 +60,9 @@ export default function QuizScreen() {
       <div>
         <Bi fr={s.index >= 0 ? 'Échauffement terminé ! Le grand jeu arrive…' : 'Scannez pour jouer !'}
             he={s.index >= 0 ? 'החימום הסתיים! המשחק הגדול מתקרב…' : 'סרקו כדי לשחק!'} cls="text-6xl font-black mb-3" />
-        <Bi fr="Français ou עברית : choisissez votre langue sur votre téléphone" he="צרפתית או עברית: בוחרים שפה בטלפון" cls="text-2xl opacity-80 mb-12" />
+        <Bi fr="Français ou עברית : choisissez votre langue sur votre téléphone" he="צרפתית או עברית: בוחרים שפה בטלפון" cls="text-2xl quiz-muted mb-12" />
         <QuizGauge big players={s.players} expected={s.expected_players} warmupPct={s.warmup_start_pct} gamePct={s.game_start_pct} labels={gaugeLabels} />
-        {!s.auto_start && <p className="mt-8 text-xl opacity-70">Démarrage manuel · התחלה ידנית</p>}
+        {!s.auto_start && <p className="mt-8 text-xl quiz-muted">Démarrage manuel · התחלה ידנית</p>}
       </div>
     </div>
   );
@@ -81,7 +81,7 @@ export default function QuizScreen() {
         <div className="flex items-center justify-between gap-6">
           {q.warmup
             ? <span className="quiz-warmup-badge text-2xl">🔥 Échauffement · חימום — {q.warmup === 'seniors' ? 'facile pour les anciens 👴 קל לוותיקים' : 'facile pour les jeunes 🧒 קל לצעירים'}</span>
-            : <span className="text-2xl font-bold opacity-90">{cat?.emoji} {cat?.fr} · <span lang="he">{cat?.he}</span> — Question {s.index + 1 - s.warmups} / {s.total - s.warmups}</span>}
+            : <span className="text-2xl font-bold quiz-muted">{cat?.emoji} {cat?.fr} · <span lang="he">{cat?.he}</span> — Question {s.index + 1 - s.warmups} / {s.total - s.warmups}</span>}
           {s.status === 'question'
             ? <div className="quiz-clock" style={{ ['--p' as string]: timePct }} aria-label={`${remaining} s`}><span>{remaining}</span></div>
             : <span className="text-3xl font-black text-amber-300">⏰ Réponse ! · !תשובה</span>}
@@ -111,7 +111,7 @@ export default function QuizScreen() {
           <div className="grid grid-cols-2 gap-10 text-2xl leading-snug bg-white/10 rounded-3xl p-6">
             <p dir="ltr" lang="fr">{reveal.explanation_fr}</p>
             <p dir="rtl" lang="he">{reveal.explanation_he}</p>
-            {reveal.source_label && <p className="col-span-2 text-base opacity-60">Source · מקור : {reveal.source_label}</p>}
+            {reveal.source_label && <p className="col-span-2 text-base quiz-muted">Source · מקור : {reveal.source_label}</p>}
           </div>
         ) : (
           <div>
@@ -127,7 +127,7 @@ export default function QuizScreen() {
   } else if (s.status === 'finished') body = (
     <div className="h-full flex flex-col">
       <Bi fr="🏆 Bravo à tous !" he="🏆 !כל הכבוד לכולם" cls="text-6xl font-black text-center mb-8" center />
-      {s.tables && s.tables.length > 0 ? <TopTables rows={s.tables} /> : <p className="text-3xl text-center opacity-70">—</p>}
+      {s.tables && s.tables.length > 0 ? <TopTables rows={s.tables} /> : <p className="text-3xl text-center quiz-muted">—</p>}
     </div>
   );
 
@@ -135,9 +135,9 @@ export default function QuizScreen() {
     <main className="quiz-screen quiz-big-screen h-screen overflow-hidden flex flex-col p-10">
       <header className="flex items-center justify-between mb-8 gap-6">
         <div className="flex items-center gap-5"><GalaLogo size={84} />
-          <div><p className="text-4xl font-black">Le grand quiz du gala</p><p className="text-3xl font-black opacity-90" dir="rtl" lang="he">החידון הגדול של הגאלה</p></div></div>
+          <div><p className="text-4xl font-black">Le grand quiz du gala</p><p className="text-3xl font-black quiz-muted" dir="rtl" lang="he">החידון הגדול של הגאלה</p></div></div>
         <div className="flex items-center gap-5">
-          {s && s.status !== 'idle' && s.status !== 'lobby' && <div className="text-right text-xl font-bold"><p>📲 {joinUrl}</p><p className="opacity-70">{s.players} joueurs · שחקנים</p></div>}
+          {s && s.status !== 'idle' && s.status !== 'lobby' && <div className="text-right text-xl font-bold"><p>📲 {joinUrl}</p><p className="quiz-muted">{s.players} joueurs · שחקנים</p></div>}
           {s && s.status !== 'idle' && s.status !== 'lobby' && qrBlock('w-28')}
           {offline && <span className="text-rose-300 text-xl">● Connexion interrompue</span>}
         </div>
@@ -169,11 +169,11 @@ function Results({ s }: { s: QuizState }) {
       </div>
       {q.warmup
         ? <Bi fr={s.next_is_warmup ? 'Prochaine question d’échauffement dans un instant…' : 'Échauffement terminé ! Le grand jeu arrive…'}
-              he={s.next_is_warmup ? 'שאלת החימום הבאה תכף מגיעה…' : 'החימום הסתיים! המשחק הגדול מתקרב…'} cls="text-3xl font-bold opacity-90 text-center" center />
+              he={s.next_is_warmup ? 'שאלת החימום הבאה תכף מגיעה…' : 'החימום הסתיים! המשחק הגדול מתקרב…'} cls="text-3xl font-bold quiz-muted text-center" center />
         : s.tables && s.tables.length > 0
           ? <TopTables rows={s.tables} small />
           : null}
-      {!q.warmup && last && <p className="text-2xl text-center opacity-80">Dernière question ! Le podium arrive… · !השאלה האחרונה</p>}
+      {!q.warmup && last && <p className="text-2xl text-center quiz-muted">Dernière question ! Le podium arrive… · !השאלה האחרונה</p>}
     </div>
   );
 }
@@ -183,9 +183,9 @@ function Stat({ big, fr, he, sub, fill, color }: { big: string; fr: string; he: 
     <div className="bg-white/10 rounded-3xl p-8">
       <p className="text-8xl font-black tabular-nums" dir="ltr">{big}</p>
       <p className="text-3xl font-bold mt-2">{fr}</p>
-      <p className="text-3xl font-bold opacity-90" dir="rtl" lang="he">{he}</p>
+      <p className="text-3xl font-bold quiz-muted" dir="rtl" lang="he">{he}</p>
       <div className="quiz-gauge h-8 mt-6" dir="ltr"><div className="quiz-gauge-fill" style={{ width: fill + '%', background: color }} /></div>
-      <p className="text-xl opacity-70 mt-2 tabular-nums" dir="ltr">{sub}</p>
+      <p className="text-xl quiz-muted mt-2 tabular-nums" dir="ltr">{sub}</p>
     </div>
   );
 }
@@ -207,7 +207,7 @@ function TopTables({ rows, small = false }: { rows: { table_number: number; play
           <div key={top[i].table_number} className="text-center w-56">
             <p className={(small ? 'text-5xl' : 'text-7xl') + ' mb-1'} aria-hidden>{medals[i]}</p>
             <p className={(small ? 'text-3xl' : 'text-4xl') + ' font-black'}>Table {top[i].table_number}</p>
-            <p className="text-2xl opacity-80 mb-2"><span dir="rtl" lang="he">שולחן {top[i].table_number}</span></p>
+            <p className="text-2xl quiz-muted mb-2"><span dir="rtl" lang="he">שולחן {top[i].table_number}</span></p>
             <div className={'quiz-podium ' + heights[i]}><span className={(small ? 'text-3xl' : 'text-4xl') + ' font-black tabular-nums'}>{top[i].avg_points}</span><span className="text-lg">pts / joueur · נק׳ לשחקן</span></div>
           </div>
         ))}

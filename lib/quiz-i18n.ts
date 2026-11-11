@@ -114,10 +114,10 @@ export const t = {
 
 // Formes + couleurs façon jeu télé : reconnaissables même sans lire.
 export const answerStyles = [
-  { shape: '▲', bg: '#d64545', label: 'A' },
-  { shape: '◆', bg: '#2f6fd0', label: 'B' },
-  { shape: '●', bg: '#d99a1e', label: 'C' },
-  { shape: '■', bg: '#2e9b5f', label: 'D' },
+  { shape: '▲', bg: '#c0392b', label: 'A' },
+  { shape: '◆', bg: '#1d5fc4', label: 'B' },
+  { shape: '●', bg: '#a85c00', label: 'C' },
+  { shape: '■', bg: '#1e7d47', label: 'D' },
 ];
 
 export type QuizQuestion = {

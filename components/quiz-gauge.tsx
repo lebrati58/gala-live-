@@ -18,7 +18,7 @@ export default function QuizGauge({ players, expected, warmupPct, gamePct, big =
         <Marker at={warmupPct} reached={reachedWarm} label={`⛺ ${warmupPct} %`} big={big} />
         <Marker at={gamePct} reached={reachedGame} label={`🏁 ${gamePct} %`} big={big} />
       </div>
-      <div className={'flex justify-between opacity-80 ' + (big ? 'text-xl mt-10' : 'text-sm mt-7')}>
+      <div className={'flex justify-between quiz-muted ' + (big ? 'text-xl mt-10' : 'text-sm mt-7')}>
         <span dir="ltr" className="tabular-nums">{players} / {expected}</span>
         <span>{reachedGame ? '🏁' : reachedWarm ? labels.game + ' ' + gamePct + ' %' : labels.warmup + ' ' + warmupPct + ' %'}</span>
       </div>

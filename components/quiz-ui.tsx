@@ -13,8 +13,8 @@ export function Leaderboard({ lang, rows, highlight }: { lang: Lang; rows: { tab
       <ol className="space-y-2">
         {rows.map((r, i) => (
           <li key={r.table_number} className={'flex items-center justify-between rounded-xl px-4 py-3 ' + (r.table_number === highlight ? 'bg-amber-300 text-[#122238]' : 'bg-white/10')}>
-            <span className="font-bold">{medals[i] || `#${i + 1}`} {L.myTable} {r.table_number} <span className="opacity-70 text-sm">({r.players} {L.players})</span></span>
-            <span className="font-black tabular-nums">{r.avg_points} <span className="text-xs font-semibold opacity-70">{L.avg}</span></span>
+            <span className="font-bold">{medals[i] || `#${i + 1}`} {L.myTable} {r.table_number} <span className="quiz-muted text-sm">({r.players} {L.players})</span></span>
+            <span className="font-black tabular-nums">{r.avg_points} <span className="text-xs font-semibold quiz-muted">{L.avg}</span></span>
           </li>
         ))}
       </ol>

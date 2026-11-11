@@ -131,7 +131,7 @@ export default function QuizPlayer() {
 
   const header = (
     <header className="flex items-center justify-between gap-3 mb-5">
-      <div className="flex items-center gap-3 min-w-0"><GalaLogo size={46} /><div className="min-w-0"><p className="font-black text-lg leading-tight truncate">{L.title}</p>{me && <p className="text-sm opacity-80 truncate">{me.nickname} · {L.myTable} {me.table_number} · {me.score} {L.points}</p>}</div></div>
+      <div className="flex items-center gap-3 min-w-0"><GalaLogo size={46} /><div className="min-w-0"><p className="font-black text-base leading-tight">{L.title}</p>{me && <p className="text-sm quiz-muted truncate">{me.nickname} · {L.myTable} {me.table_number} · {me.score} {L.points}</p>}</div></div>
       <button onClick={() => chooseLang(he ? 'fr' : 'he')} className="quiz-lang-btn" lang={he ? 'fr' : 'he'} aria-label={he ? 'Passer en français' : 'מעבר לעברית'}>{he ? '🇫🇷' : '🇮🇱'} {L.switchLang}</button>
     </header>
   );
@@ -142,7 +142,7 @@ export default function QuizPlayer() {
   else if (!me && s.status !== 'finished') body = (
     <Card>
       <h1 className="text-2xl font-black mb-1">{L.title}</h1>
-      <p className="mb-6 opacity-80">{L.subtitle}</p>
+      <p className="mb-6 quiz-muted">{L.subtitle}</p>
       <form onSubmit={join} className="space-y-5">
         <label className="block text-lg font-bold">{L.nickname}<input className="quiz-field" maxLength={30} autoComplete="nickname" value={nickname} onChange={e => setNickname(e.target.value)} required /></label>
         <label className="block text-lg font-bold">{L.table}<input className="quiz-field text-center text-3xl font-black" inputMode="numeric" pattern="[0-9]*" min={1} max={500} type="number" value={table} onChange={e => setTable(e.target.value)} required /></label>
@@ -166,7 +166,7 @@ export default function QuizPlayer() {
       {myChoice !== undefined ? (
         <Card><p className="text-6xl text-center mb-3" aria-hidden>✅</p><p className="text-center text-2xl font-black">{L.answered}</p>
           <div className="mt-4 rounded-2xl p-4 text-white font-bold text-xl flex items-center gap-3" style={{ background: answerStyles[myChoice].bg }}><span aria-hidden className="text-2xl">{answerStyles[myChoice].shape}</span>{opts[myChoice]}</div>
-          <p className="text-center mt-4 opacity-80">{L.answeredHint}</p></Card>
+          <p className="text-center mt-4 quiz-muted">{L.answeredHint}</p></Card>
       ) : remaining === 0 ? <Card><p className="text-center text-2xl font-black">⏰ {L.timeUp}</p></Card> : (
         <div className="grid gap-3" role="group" aria-label={he ? q.question_he : q.question_fr}>
           {opts.map((o, i) => <button key={i} onClick={() => answer(i)} disabled={!!pending} className="quiz-answer" style={{ background: answerStyles[i].bg }}><span aria-hidden className="text-3xl shrink-0">{answerStyles[i].shape}</span><span>{o}</span></button>)}
@@ -183,14 +183,14 @@ export default function QuizPlayer() {
           <p className="text-6xl text-center mb-2" aria-hidden>{none ? '🤔' : ok ? '🎉' : '💪'}</p>
           <p className="text-center text-3xl font-black mb-1">{none ? L.noAnswer : ok ? L.correct : L.wrong}</p>
           {ok && !q.warmup && <p className="text-center text-xl font-bold text-amber-200">+{me?.points} {L.points}</p>}
-          {q.warmup && <p className="text-center text-sm opacity-80">{L.warmupNoPoints}</p>}
+          {q.warmup && <p className="text-center text-sm quiz-muted">{L.warmupNoPoints}</p>}
           <p className="mt-5 font-bold">{L.goodAnswerWas}</p>
           <div className="mt-2 rounded-2xl p-4 text-white font-bold text-xl flex items-center gap-3" style={{ background: answerStyles[s.reveal.correct_index].bg }}><span aria-hidden className="text-2xl">{answerStyles[s.reveal.correct_index].shape}</span>{opts[s.reveal.correct_index]}</div>
           <p className="mt-4 text-lg leading-relaxed">{he ? s.reveal.explanation_he : s.reveal.explanation_fr}</p>
-          {s.reveal.source_label && <p className="mt-3 text-sm opacity-70">{L.source} : {s.reveal.source_url ? <a className="underline" href={s.reveal.source_url} target="_blank" rel="noreferrer">{s.reveal.source_label}</a> : s.reveal.source_label}</p>}
+          {s.reveal.source_label && <p className="mt-3 text-sm quiz-muted">{L.source} : {s.reveal.source_url ? <a className="underline" href={s.reveal.source_url} target="_blank" rel="noreferrer">{s.reveal.source_label}</a> : s.reveal.source_label}</p>}
           {me?.table_rank && <p className="mt-5 text-center text-lg font-bold">{L.tableRank} : <span className="text-amber-200 text-2xl">#{me.table_rank}</span></p>}
         </Card>
-        <p className="text-center mt-4 opacity-80">{L.waitingNext}</p>
+        <p className="text-center mt-4 quiz-muted">{L.waitingNext}</p>
       </div>
     );
   } else if (s.status === 'finished') body = (
@@ -209,7 +209,7 @@ export default function QuizPlayer() {
       {header}
       {offline && s && <p role="status" className="mb-3 text-center text-sm text-amber-200">{L.errors.network}</p>}
       {body}
-      {me && s?.status !== 'finished' && <button onClick={changePlayer} className="block mx-auto mt-8 text-sm underline opacity-60">{L.changePlayer}</button>}
+      {me && s?.status !== 'finished' && <button onClick={changePlayer} className="block mx-auto mt-8 text-sm underline quiz-muted">{L.changePlayer}</button>}
     </Shell>
   );
 }
@@ -227,7 +227,7 @@ function QuestionHead({ lang, s, remaining }: { lang: Lang; s: QuizState; remain
       {q.warmup ? (
         <div className="quiz-warmup-badge mb-3">🔥 {L.warmupBadge} — {q.warmup === 'seniors' ? L.warmupSeniors : L.warmupJuniors}</div>
       ) : (
-        <div className="flex items-center justify-between text-sm font-bold mb-2 opacity-90">
+        <div className="flex items-center justify-between text-sm font-bold mb-2 quiz-muted">
           <span>{cat?.emoji} {cat?.[lang]}</span>
           <span>{L.question} {s.index + 1 - s.warmups} {L.of} {s.total - s.warmups}</span>
         </div>
