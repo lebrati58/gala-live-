@@ -1,0 +1,6 @@
+@tailwind base;@tailwind components;@tailwind utilities;
+body{background:#0b1020;color:#f6f0df;font-family:Arial,sans-serif}
+input,button,select{font:inherit}input,select{color:#101828}button{cursor:pointer}
+.panel{background:#171f34;border:1px solid #384158;border-radius:20px;padding:24px}
+.gold{color:#e9c879}.btn{background:#e9c879;color:#151b2b;border-radius:12px;padding:12px 18px;font-weight:bold}
+.field{width:100%;padding:12px;border-radius:10px;margin-top:6px}
