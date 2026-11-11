@@ -1,0 +1,4 @@
+import {NextRequest,NextResponse} from 'next/server';import {adminAuthorized} from '@/lib/auth';import {db} from '@/lib/supabase';
+export const dynamic='force-dynamic';
+export async function GET(){if(!adminAuthorized())return NextResponse.json({error:'Unauthorized'},{status:401});const {data,error}=await db().from('pledges').select('*').order('created_at',{ascending:false}).limit(1000);return error?NextResponse.json({error:error.message},{status:500}):NextResponse.json(data)}
+export async function PATCH(req:NextRequest){if(!adminAuthorized())return NextResponse.json({error:'Unauthorized'},{status:401});const {id,status}=await req.json();if(typeof id!=='string'||!['pending','paid','cancelled'].includes(status))return NextResponse.json({error:'Invalid input'},{status:400});const {error}=await db().from('pledges').update({status}).eq('id',id);return error?NextResponse.json({error:error.message},{status:500}):NextResponse.json({ok:true})}
