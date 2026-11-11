@@ -1,5 +1,5 @@
-import GalaLogo from '@/components/gala-logo';
 'use client';
+import GalaLogo from '@/components/gala-logo';
 import {useEffect,useState} from 'react';
 type Settings={project_names:Record<string,string>;smile_url:string};
 const ids=['projet_a','projet_b','projet_c'];
