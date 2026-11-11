@@ -33,14 +33,14 @@ export default function Live(){
  const total=useMemo(()=>pledges.reduce((n,p)=>n+Number(p.amount),0),[pledges]);
  const paid=useMemo(()=>pledges.filter(p=>p.status==='paid').reduce((n,p)=>n+Number(p.amount),0),[pledges]);
  const pending=total-paid;
- return <main className="min-h-screen bg-[#080b14] text-white p-5 md:p-10 lg:p-14 overflow-hidden">
+ return <main className="min-h-screen bg-[#122238] text-white p-5 md:p-10 lg:p-14 overflow-hidden">
   <header className="flex items-center justify-between gap-4 mb-8 md:mb-12">
-   <div className="flex items-center gap-4"><GalaLogo size={92}/><div><p className="text-xs md:text-sm tracking-[.4em] text-amber-300 uppercase">Soirée de solidarité</p><h1 className="text-3xl md:text-5xl font-black tracking-tight">GALA <span className="gold">LIVE</span></h1></div></div>
+   <div className="flex items-center gap-4"><GalaLogo size={92}/><div><p className="text-xs md:text-sm tracking-[.4em] text-[#dfc5a3] uppercase">Soirée de solidarité</p><h1 className="text-3xl md:text-5xl font-black tracking-tight">GALA <span className="gold">LIVE</span></h1></div></div>
    <span className={error?'text-rose-300':'text-emerald-300'} aria-live="polite">{error?'● Connexion interrompue':'● Actualisation toutes les 3 s'}</span>
   </header>
-  <section className="relative rounded-3xl border border-amber-300/30 bg-gradient-to-br from-[#242034] via-[#141827] to-[#0d1321] p-7 md:p-12 mb-6 text-center shadow-2xl">
+  <section className="relative rounded-3xl border border-[#dfc5a3]/30 bg-gradient-to-br from-[#233a51] via-[#172b42] to-[#102036] p-7 md:p-12 mb-6 text-center shadow-2xl">
    <HeartHandshake className="mx-auto text-amber-300 mb-3" size={36}/>
-   <h2 className="uppercase tracking-[.25em] text-sm md:text-xl text-amber-100">Total des promesses de dons</h2>
+   <h2 className="uppercase tracking-[.25em] text-sm md:text-xl text-[#f1e8db]">Total des promesses de dons</h2>
    <motion.p key={total} initial={{opacity:.65,scale:.97}} animate={{opacity:1,scale:1}} transition={{duration:.6}} className="gold font-black text-5xl sm:text-7xl md:text-8xl lg:text-9xl my-6 tabular-nums">{money(total)}</motion.p>
    <p className="text-slate-300 text-base md:text-xl">Engagements enregistrés · paiements non nécessairement effectués</p>
    <AnimatePresence>{flash&&<motion.div initial={{opacity:0,scale:.7}} animate={{opacity:1,scale:1}} exit={{opacity:0}} className="absolute top-5 right-6 text-amber-300 text-3xl" aria-hidden="true">✦ ✨ ✦</motion.div>}</AnimatePresence>
@@ -51,8 +51,8 @@ export default function Live(){
    <div className="panel"><div className="flex items-center gap-2 text-slate-300"><Users size={20}/> Nombre de promesses</div><p className="text-3xl md:text-4xl font-bold mt-3 tabular-nums">{pledges.length}</p></div>
   </div>
   <div className="grid lg:grid-cols-2 gap-6">
-   <section className="panel"><h2 className="text-2xl gold font-bold mb-6">Répartition par projet</h2>{ids.map(id=>{const sum=pledges.reduce((n,p)=>n+Number(p.amount)*Number(p.percentages[id]||0)/100,0);const percent=total?sum/total*100:0;return <div key={id} className="mb-7"><div className="flex justify-between gap-3 mb-2"><span className="font-semibold">{names[id]||id}</span><span className="text-right">{money(sum)} · {percent.toFixed(1)} %</span></div><div className="h-4 bg-slate-700 rounded-full overflow-hidden"><motion.div initial={{width:0}} animate={{width:percent+'%'}} transition={{duration:1}} className="h-full bg-amber-300 rounded-full"/></div></div>})}</section>
-   <section className="panel"><h2 className="text-2xl gold font-bold mb-6">Dernières promesses</h2><div className="space-y-2">{pledges.slice(0,7).map((p,i)=><motion.div key={p.created_at+i} initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} className="flex justify-between items-center gap-3 border-b border-slate-700 py-3"><span className="font-semibold">{p.first_name}</span><span className="flex items-center gap-3"><strong>{money(Number(p.amount))}</strong><span className={p.status==='paid'?'text-emerald-300 text-xs':'text-amber-200 text-xs'}>{p.status==='paid'?'Payé*':'Promis'}</span></span></motion.div>)}</div></section>
+   <section className="panel"><h2 className="text-2xl gold font-bold mb-6">Répartition par projet</h2>{ids.map(id=>{const sum=pledges.reduce((n,p)=>n+Number(p.amount)*Number(p.percentages[id]||0)/100,0);const percent=total?sum/total*100:0;return <div key={id} className="mb-7"><div className="flex justify-between gap-3 mb-2"><span className="font-semibold">{names[id]||id}</span><span className="text-right">{money(sum)} · {percent.toFixed(1)} %</span></div><div className="h-4 bg-slate-700 rounded-full overflow-hidden"><motion.div initial={{width:0}} animate={{width:percent+'%'}} transition={{duration:1}} className="h-full bg-[#dfc5a3] rounded-full"/></div></div>})}</section>
+   <section className="panel"><h2 className="text-2xl gold font-bold mb-6">Dernières promesses</h2><div className="space-y-2">{pledges.slice(0,7).map((p,i)=><motion.div key={p.created_at+i} initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} className="flex justify-between items-center gap-3 border-b border-slate-700 py-3"><span className="font-semibold">{p.first_name}</span><span className="flex items-center gap-3"><strong>{money(Number(p.amount))}</strong><span className={p.status==='paid'?'text-emerald-300 text-xs':'text-[#e7d5bd] text-xs'}>{p.status==='paid'?'Payé*':'Promis'}</span></span></motion.div>)}</div></section>
   </div>
   <footer className="mt-7 text-sm text-slate-400">* « Payé » signifie marqué comme tel par un administrateur ; aucune confirmation bancaire automatique n'est actuellement intégrée.</footer>
  </main>;
