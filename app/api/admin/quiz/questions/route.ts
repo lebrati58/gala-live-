@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { adminAuthorized } from '@/lib/auth';
 import { isUuid, quizAdminKey, quizDb } from '@/lib/quiz-db';
 
+export const fetchCache = 'force-no-store';
 export const dynamic = 'force-dynamic';
 const unauthorized = () => NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 const CATS = ['ei_israel', 'eeif', 'scoutisme', 'israel'];

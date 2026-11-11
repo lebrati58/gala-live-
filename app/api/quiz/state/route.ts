@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { isUuid, quizDb, quizEnv } from '@/lib/quiz-db';
 
+export const fetchCache = 'force-no-store';
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {

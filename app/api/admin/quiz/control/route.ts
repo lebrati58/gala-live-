@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { adminAuthorized } from '@/lib/auth';
 import { quizAdminKey, quizDb, quizEnv } from '@/lib/quiz-db';
 
+export const fetchCache = 'force-no-store';
 export const dynamic = 'force-dynamic';
 const ACTIONS = ['open', 'next', 'reveal', 'finish', 'close'];
 const MESSAGES: Record<string, string> = {

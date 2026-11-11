@@ -6,7 +6,12 @@ export function quizDb() {
   const url = process.env.QUIZ_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.QUIZ_SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!url || !key) throw new Error('Quiz database configuration missing');
-  return createClient(url, key, { auth: { persistSession: false } });
+  // cache: 'no-store' : sinon le cache de données de Next.js 14 peut resservir un ancien état
+  // du quiz (constaté en préprod : même heure serveur et 0 joueur malgré des inscrits).
+  return createClient(url, key, {
+    auth: { persistSession: false },
+    global: { fetch: (input: RequestInfo | URL, init?: RequestInit) => fetch(input, { ...init, cache: 'no-store' }) },
+  });
 }
 
 // Partie de quiz distincte en production et en préproduction (preview / local).
