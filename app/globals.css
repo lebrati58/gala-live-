@@ -1,6 +1,28 @@
-@tailwind base;@tailwind components;@tailwind utilities;
-body{background:#0b1020;color:#f6f0df;font-family:Arial,sans-serif}
-input,button,select{font:inherit}input,select{color:#101828}button{cursor:pointer}
-.panel{background:#171f34;border:1px solid #384158;border-radius:20px;padding:24px}
-.gold{color:#e9c879}.btn{background:#e9c879;color:#151b2b;border-radius:12px;padding:12px 18px;font-weight:bold}
-.field{width:100%;padding:12px;border-radius:10px;margin-top:6px}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+:root{color-scheme:light;--ink:#17263c;--muted:#68768a;--ivory:#f8f7f3;--line:#dfe3e7;--accent:#9b7953}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(ellipse at 85% 0%,#e9eff3 0%,transparent 40%),linear-gradient(145deg,#fcfbf8,#f2f4f5);color:var(--ink);font-family:Arial,Helvetica,sans-serif;min-height:100vh}
+body:before{content:'';position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(90deg,rgba(23,38,60,.018) 1px,transparent 1px);background-size:72px 72px;opacity:.5}
+main{position:relative}
+h1,h2{letter-spacing:-.035em}
+h1{line-height:1.1}
+p{line-height:1.6}
+input,button,select{font:inherit}
+button{cursor:pointer;transition:transform .18s ease,background .18s ease,box-shadow .18s ease}
+button:hover:not(:disabled){transform:translateY(-1px)}
+button:disabled{opacity:.6;cursor:not-allowed}
+.panel{background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:24px;padding:clamp(20px,4vw,32px);box-shadow:0 18px 50px rgba(29,45,64,.06)}
+.gold{color:#947047}
+.btn{background:#172c43;color:#fff;border:1px solid #172c43;border-radius:13px;padding:15px 20px;font-weight:700;letter-spacing:.01em;box-shadow:0 8px 20px rgba(23,44,67,.14)}
+.btn:hover:not(:disabled){background:#29445e;box-shadow:0 12px 26px rgba(23,44,67,.2)}
+.field{width:100%;padding:14px 16px;border-radius:12px;margin-top:8px;border:1px solid #d5dce3;background:#fff;color:#17263c;outline:none;transition:border .2s,box-shadow .2s}
+.field:focus{border-color:#9b7953;box-shadow:0 0 0 3px rgba(155,121,83,.13)}
+label{font-size:.94rem;font-weight:600;color:#34465b}
+input[type=range]{cursor:pointer}
+input[type=range]{accent-color:#9b7953}
+select{color:#17263c;background:#fff;border-radius:8px;padding:7px}
+table th{font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;color:#68768a}
+@media(max-width:640px){.panel{border-radius:19px;padding:22px}}
