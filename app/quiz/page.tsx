@@ -25,7 +25,8 @@ export default function QuizPlayer() {
   const [table, setTable] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
-  const [pending, setPending] = useState<{ q: string; choice: number } | null>(null);
+  // Réponse en cours d'envoi, liée à UNE question d'UNE partie : elle ne doit jamais bloquer la suivante.
+  const [pending, setPending] = useState<{ q: string; run: string | null; choice: number } | null>(null);
   const [now, setNow] = useState(Date.now());
   const offset = useRef(0);
   const idRef = useRef<Identity | null>(null);
@@ -90,8 +91,8 @@ export default function QuizPlayer() {
 
   async function answer(choice: number) {
     const id = idRef.current; const q = state?.question;
-    if (!id || !q || pending || state?.player?.choice !== undefined) return;
-    setPending({ q: q.id, choice });
+    if (!id || !q || (pending && pending.q === q.id && pending.run === (state?.run_id ?? null)) || state?.player?.choice !== undefined) return;
+    setPending({ q: q.id, run: state?.run_id ?? null, choice });
     try {
       const r = await fetch('/api/quiz/answer', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ player_id: id.player_id, token: id.token, question_id: q.id, choice }) });
       const d = await r.json();
@@ -127,7 +128,8 @@ export default function QuizPlayer() {
   const q = s?.question;
   const opts = q ? (he ? q.options_he : q.options_fr) : [];
   const remaining = s?.deadline ? Math.max(0, Math.ceil((new Date(s.deadline).getTime() - (now + offset.current)) / 1000)) : 0;
-  const myChoice = me?.choice ?? (pending && q && pending.q === q.id ? pending.choice : undefined);
+  const pendingHere = !!(pending && q && pending.q === q.id && pending.run === (s?.run_id ?? null));
+  const myChoice = me?.choice ?? (pendingHere ? pending!.choice : undefined);
 
   const header = (
     <header className="flex items-center justify-between gap-3 mb-6">
@@ -183,7 +185,7 @@ export default function QuizPlayer() {
           {opts.map((o, i) => {
             const st = reveal ? (i === reveal.correct_index ? 'correct' : i === myChoice ? 'locked' : 'dim')
               : myChoice !== undefined ? (i === myChoice ? 'locked' : 'dim') : '';
-            const clickable = s.status === 'question' && myChoice === undefined && !closed && !pending;
+            const clickable = s.status === 'question' && myChoice === undefined && !closed && !pendingHere;
             return (
               <div key={i} className="mil-row">
                 <Lozenge state={st} onClick={clickable ? () => answer(i) : undefined} label={`${LETTERS[i]} : ${o}`} tip={22}>
